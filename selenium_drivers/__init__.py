@@ -2,15 +2,15 @@ import os
 from selenium import webdriver
 
 SERVICE_URLS = {
-    'sauce': 'http://%s:%s@ondemand.saucelabs.com:80/wd/hub'
+    'sauce': 'http://%s:%s@ondemand.saucelabs.com:80/wd/hub',
+    'browserstack': 'http://%s:%s@hub.browserstack.com:80/wd/hub'
 }
 
 WEBDRIVER_MAP = {
     'chrome':   webdriver.Chrome,
     'firefox':  webdriver.Firefox,
-    # 'ie':       webdriver.InternetExplorer,
     'phantomjs': webdriver.PhantomJS,
-    # 'safari':   webdriver.Safari
+    'ie':       webdriver.Ie,
 }
 
 class DriverBuilder(object):

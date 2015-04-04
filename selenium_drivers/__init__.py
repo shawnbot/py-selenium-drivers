@@ -41,3 +41,6 @@ class DriverBuilder(object):
         if hub[0:4] == 'http':
             return hub % (self.username, self.access_key)
         return SERVICE_URLS.get(hub, '') % (self.username, self.access_key)
+
+    def __call__(self, *args, **kwargs):
+        return self.build(*args, **kwargs)

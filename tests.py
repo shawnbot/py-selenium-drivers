@@ -29,6 +29,10 @@ class DriverBuilderTestCase(unittest.TestCase):
         self.driver = self.builder.build('chrome')
         self.assertTrue(isinstance(self.driver, webdriver.Chrome))
 
+    def test_call(self):
+        self.driver = self.builder('chrome')
+        self.assertTrue(isinstance(self.driver, webdriver.Chrome))
+
     def xtest_safari(self):
         self.driver = self.builder.build('safari')
         self.assertTrue(isinstance(self.driver, webdriver.Safari))

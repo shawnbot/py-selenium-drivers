@@ -1,6 +1,5 @@
 import os
 import unittest
-import urllib2
 
 from selenium import webdriver
 from selenium_drivers import DriverBuilder
@@ -17,8 +16,25 @@ class DriverBuilderTestCase(unittest.TestCase):
     def tearDown(self):
         self.driver and self.driver.quit()
 
+    def test_sauce_url(self):
+        builder = DriverBuilder('foo', 'bar')
+        self.assertEqual(builder.get_hub_url('sauce'), 'http://foo:bar@ondemand.saucelabs.com:80/wd/hub')
+
+    def test_browserstack_url(self):
+        builder = DriverBuilder('foo', 'bar')
+        self.assertEqual(builder.get_hub_url('browserstack'), 'http://foo:bar@hub.browserstack.com:80/wd/hub')
+
+    def test_custom_hub_url(self):
+        builder = DriverBuilder('foo', 'bar')
+        url = 'http://%s:%s@example.com/?foo=bar'
+        self.assertEqual(builder.get_hub_url(url), url % ('foo', 'bar'))
+
     def test_phantomjs(self):
         self.driver = self.builder.build('phantomjs')
+        self.assertTrue(isinstance(self.driver, webdriver.PhantomJS))
+
+    def test_call(self):
+        self.driver = self.builder('phantomjs')
         self.assertTrue(isinstance(self.driver, webdriver.PhantomJS))
 
     def test_firefox(self):
@@ -29,17 +45,13 @@ class DriverBuilderTestCase(unittest.TestCase):
         self.driver = self.builder.build('chrome')
         self.assertTrue(isinstance(self.driver, webdriver.Chrome))
 
-    def test_call(self):
-        self.driver = self.builder('chrome')
-        self.assertTrue(isinstance(self.driver, webdriver.Chrome))
-
-    def xtest_safari(self):
-        self.driver = self.builder.build('safari')
-        self.assertTrue(isinstance(self.driver, webdriver.Safari))
-
-    def xtest_ie(self):
-        self.driver = self.builder.build('ie')
-        self.assertTrue(isinstance(self.driver, webdriver.IE))
+    def test_ie(self):
+        try:
+            self.driver = self.builder.build('ie')
+        except Exception, err:
+            print('Unable to create IE driver: %s' % err)
+            return
+        self.assertTrue(isinstance(self.driver, webdriver.Ie))
 
     def test_remote(self):
         try:
@@ -49,7 +61,7 @@ class DriverBuilderTestCase(unittest.TestCase):
                 version='9.0',
                 os='Windows XP'
             )
-        except urllib2.HTTPError, error:
+        except Exception, error:
             print('Unable to authenticate with username "%s", key "%s"; skipping remote test' % (self.builder.username, self.builder.access_key))
             return
         self.assertTrue(isinstance(self.driver, webdriver.Remote))

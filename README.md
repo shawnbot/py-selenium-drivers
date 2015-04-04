@@ -1,4 +1,4 @@
-# py-selenium-drivers
+# selenium_drivers
 Helpers for creating [Selenium WebDriver] instances in Python:
 
 ```python
